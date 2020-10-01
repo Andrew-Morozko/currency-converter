@@ -1,7 +1,7 @@
 # currency-converter
-Extremely overengineered currency converter.
+Extremely overengineered currency converter. You can download is as an Alfred workflow or a CLI application on the [releases page](https://github.com/Andrew-Morozko/currency-converter/releases/latest).
 
-Rates are acquired from currencyconverterapi.com (you should get their free API key to use this tool). Rates are cached locally for the next hour.
+Rates are acquired from currencyconverterapi.com (you should [get their free API key](https://free.currencyconverterapi.com/free-api-key) to use this tool). Rates are cached locally for the next hour, since free API updates the rates hourly.
 
 ## Currency converter
 
