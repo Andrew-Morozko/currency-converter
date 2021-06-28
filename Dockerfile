@@ -1,26 +1,27 @@
 # Code and grammar generation
-FROM python:3.8-alpine AS codegen
-ARG API_KEY
+FROM python:3.9-alpine AS codegen
 WORKDIR /codegen
 COPY ./codegen/requirements.txt /codegen/requirements.txt
 RUN pip install -r /codegen/requirements.txt
 
 COPY ./codegen /codegen
-RUN python3 codegen.py ${API_KEY}
+ARG VER
+ARG API_KEY
+RUN echo "Running codegen for version" ${VER}; python3 codegen.py ${API_KEY}
 
-
-FROM openjdk:16-jdk-alpine AS grammar
+FROM openjdk:17-jdk-alpine AS grammar
+ARG ANTLR_VER=4.9.2
 RUN apk add wget &&\
-    wget -O /antlr-4.8-complete.jar http://www.antlr.org/download/antlr-4.8-complete.jar
+    wget -O /antlr-${ANTLR_VER}-complete.jar http://www.antlr.org/download/antlr-${ANTLR_VER}-complete.jar
 
 COPY --from=codegen /codegen/CurrencyConverterSymbols.g4 /grammar/
 COPY ./grammar/CurrencyConverter.g4 /grammar/
 
-RUN export CLASSPATH=".:/antlr-4.8-complete.jar:$CLASSPATH" &&\
-    java -jar /antlr-4.8-complete.jar -Dlanguage=Go /grammar/CurrencyConverter.g4 -o /parser
+RUN export CLASSPATH=".:/antlr-${ANTLR_VER}-complete.jar:$CLASSPATH" &&\
+    java -jar /antlr-${ANTLR_VER}-complete.jar -Dlanguage=Go /grammar/CurrencyConverter.g4 -o /parser
 
 
-FROM golang:1.15.0-buster
+FROM golang:1.16.5-buster
 RUN apt-get update &&\
     apt-get install -y zip &&\
     rm -rf /var/lib/apt/lists/*

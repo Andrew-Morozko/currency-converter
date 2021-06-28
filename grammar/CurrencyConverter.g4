@@ -21,7 +21,7 @@ persent_expr: num PERCENT | '(' expr ')' PERCENT;
 
 num: sepnum;
 
-sepnum: sepnum sepnum | sepnum SEP+ sepnum | NUM;
+sepnum: sepnum sepnum | sepnum SEP+ sepnum | SEP+ sepnum | NUM;
 
 currency: name = CURNAME | sym = CURSIGN;
 
